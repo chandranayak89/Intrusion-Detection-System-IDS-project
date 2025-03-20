@@ -1,0 +1,27 @@
+# Core requirements
+numpy>=1.19.0
+
+# Packet capture requirements
+pypcap>=1.2.3
+
+# Parallel processing requirements
+# No additional packages required
+
+# GPU acceleration requirements
+# Choose the appropriate packages based on your needs
+
+# ONNX Runtime (choose one)
+# For CPU-only:
+onnxruntime>=1.8.0
+# For GPU acceleration:
+# onnxruntime-gpu>=1.8.0
+
+# PyTorch (optional, for PyTorch models)
+# torch>=1.9.0
+
+# TensorFlow (optional, for TensorFlow models)
+# tensorflow>=2.5.0
+
+# TensorRT requirements (optional, for TensorRT acceleration)
+# These typically require manual installation
+# pycuda>=2021.1 

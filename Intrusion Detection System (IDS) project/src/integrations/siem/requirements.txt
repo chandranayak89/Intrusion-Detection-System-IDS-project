@@ -1,0 +1,30 @@
+# Core requirements
+requests>=2.28.0
+pydantic>=1.10.0
+python-dateutil>=2.8.2
+PyYAML>=6.0
+setuptools>=65.0.0
+urllib3>=1.26.0
+cachetools>=5.2.0
+concurrent-log-handler>=0.9.20
+
+# SOAR integration requirements
+thehive4py>=1.8.1      # For TheHive integration
+splunk-sdk>=1.6.18     # For Splunk SOAR integration (optional)
+
+# Log enrichment requirements
+maxminddb>=2.2.0       # For GeoIP lookups
+geoip2>=4.6.0          # For GeoIP lookups (MaxMind GeoIP2)
+dnspython>=2.2.1       # For DNS resolution
+ipaddress>=1.0.23      # For IP address validation
+tldextract>=3.4.0      # For domain extraction
+
+# Notification requirements
+slackclient>=2.9.4     # For Slack notifications (optional)
+pdpyras>=4.5.0         # For PagerDuty API access (optional)
+
+# Testing requirements (development only)
+pytest>=7.2.0
+pytest-cov>=4.0.0
+responses>=0.22.0      # For mocking HTTP requests in tests
+freezegun>=1.2.2       # For time-based testing 

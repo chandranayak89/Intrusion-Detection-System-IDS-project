@@ -1,0 +1,56 @@
+---
+# Multi-phase attack scenario
+name: "Multi-Phase Attack Scenario"
+description: "This scenario simulates a multi-phase attack starting with reconnaissance and ending with data exfiltration"
+version: "1.0"
+author: "IDS Team"
+
+# Target information
+target:
+  host: "127.0.0.1"
+  services:
+    - name: "web"
+      port: 80
+    - name: "ssh"
+      port: 22
+    - name: "database"
+      port: 3306
+
+# Attack phases
+attacks:
+  - type: "port_scan"
+    name: "Initial Reconnaissance"
+    description: "Scanning for open ports"
+    delay: 0.2
+    target: "127.0.0.1"
+    ports: [20, 21, 22, 23, 25, 53, 80, 110, 443, 1433, 3306, 3389, 5432, 8080]
+    scan_type: "tcp_connect"
+    
+  - type: "brute_force"
+    name: "SSH Brute Force"
+    description: "Attempting to brute force SSH login"
+    target: "127.0.0.1"
+    target_port: 22
+    username: "admin"
+    protocol: "ssh"
+    num_attempts: 10
+    delay: 1.0
+    passwords: ["admin", "password", "123456", "root", "qwerty", "admin123", "letmein", "welcome"]
+    
+  - type: "sql_injection"
+    name: "Web Application Attack"
+    description: "Attempting SQL injection attacks"
+    target: "http://127.0.0.1"
+    target_path: "/login"
+    param_name: "username"
+    num_attempts: 5
+    delay: 2.0
+    
+  - type: "ddos"
+    name: "Denial of Service Attack"
+    description: "Performing a DoS attack against the web server"
+    target: "127.0.0.1"
+    target_port: 80
+    attack_type: "http_flood"
+    duration: 10
+    packet_delay: 0.05 

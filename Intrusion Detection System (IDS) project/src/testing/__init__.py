@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-Testing Framework Package
-This package contains modules for testing and validating the IDS system against real-world attack scenarios.
-""" 
+Testing Package
+This package contains modules for testing the IDS effectiveness through various simulations.
+"""
+
+import logging
+
+# Setup package logger
+logger = logging.getLogger('ids.testing') 

@@ -1,0 +1,179 @@
+##################################################
+# SIEM & Incident Response Integration Configuration
+##################################################
+
+# Log Enrichment Configuration
+# ---------------------------
+geoip:
+  enabled: false  # Set to true to enable GeoIP enrichment
+  db_path: "/path/to/GeoIP2-City.mmdb"  # Path to MaxMind GeoIP2 database
+  cache_size: 1000  # Number of GeoIP lookups to cache
+  cache_ttl: 86400  # Cache TTL in seconds (24 hours)
+  field_name: "geoip"  # Field name to store GeoIP data
+  ip_fields:  # List of fields containing IP addresses to enrich
+    - "source_ip"
+    - "destination_ip"
+    - "related_ips"
+
+dns:
+  enabled: false  # Set to true to enable DNS enrichment
+  cache_size: 1000  # Number of DNS lookups to cache
+  cache_ttl: 3600  # Cache TTL in seconds (1 hour)
+  field_name: "dns"  # Field name to store DNS data
+  ip_fields:  # List of fields containing IP addresses to perform reverse DNS lookups
+    - "source_ip"
+    - "destination_ip"
+  hostname_fields:  # List of fields containing hostnames to resolve
+    - "source_hostname"
+    - "destination_hostname"
+  dns_servers:  # Optional list of DNS servers to use (uses system DNS if not specified)
+    - "8.8.8.8"
+    - "8.8.4.4"
+  timeout: 2.0  # DNS query timeout in seconds
+
+threat_intel:
+  enabled: false  # Set to true to enable threat intelligence enrichment
+  api_key: "your-api-key-here"  # API key for threat intelligence service
+  api_url: "https://api.threatintelligence.example.com/v1"  # API URL
+  cache_size: 1000  # Number of threat intel lookups to cache
+  cache_ttl: 86400  # Cache TTL in seconds (24 hours)
+  field_name: "threat_intel"  # Field name to store threat intel data
+  indicator_fields:  # List of fields containing indicators to check
+    - "source_ip"
+    - "destination_ip"
+    - "file_hash"
+    - "url"
+  timeout: 10.0  # API request timeout in seconds
+
+# Notification Configuration
+# -------------------------
+slack:
+  enabled: false  # Set to true to enable Slack notifications
+  webhook_url: "https://hooks.slack.com/services/TXXXXXXXX/BXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX"
+  channel: "#security-alerts"  # Channel to send notifications to (optional)
+  username: "IDS Alert System"  # Username to display
+  icon_emoji: ":warning:"  # Emoji icon to use
+  timeout: 5.0  # API request timeout in seconds
+  batch_size: 10  # Maximum number of alerts to send in a single batch
+  max_retries: 3  # Number of times to retry failed requests
+  include_full_data: false  # Whether to include full alert data in notification
+
+email:
+  enabled: false  # Set to true to enable email notifications
+  smtp_server: "smtp.example.com"  # SMTP server address
+  smtp_port: 587  # SMTP server port
+  use_tls: true  # Whether to use TLS
+  username: "alerts@example.com"  # SMTP username
+  password: "your-password-here"  # SMTP password
+  from_address: "ids-alerts@example.com"  # Sender email address
+  to_addresses:  # List of recipient email addresses
+    - "security-team@example.com"
+  cc_addresses: []  # List of CC email addresses
+  bcc_addresses: []  # List of BCC email addresses
+  template_path: null  # Path to custom email template (optional)
+  subject_prefix: "[IDS ALERT]"  # Prefix for email subject
+  max_retries: 3  # Number of times to retry failed sends
+  timeout: 10.0  # SMTP connection timeout in seconds
+  batch_size: 5  # Maximum number of alerts to send in a single email
+
+pagerduty:
+  enabled: false  # Set to true to enable PagerDuty notifications
+  api_key: "your-api-key-here"  # PagerDuty API key
+  service_id: "PXXXXXXX"  # PagerDuty service ID
+  source: "IDS"  # Event source
+  component: "Security"  # Component generating the event
+  timeout: 10.0  # API request timeout in seconds
+  max_retries: 3  # Number of times to retry failed requests
+  include_full_data: false  # Whether to include full alert data in notification
+
+# SOAR Integration Configuration
+# -----------------------------
+thehive:
+  enabled: false  # Set to true to enable TheHive integration
+  api_url: "http://thehive.example.com:9000"  # TheHive API URL
+  api_key: "your-api-key-here"  # TheHive API key
+  verify_ssl: true  # Whether to verify SSL certificates
+  proxies: null  # Proxy configuration (optional)
+  org_name: "default"  # Organization name
+  default_tlp: 2  # Default TLP level (0: white, 1: green, 2: amber, 3: red)
+  alert_template:  # Template for creating alerts
+    type: "ids"  # Alert type
+    source: "IDS System"  # Alert source
+    sourceRef: "{{id}}"  # Source reference (alert ID)
+    title: "{{title}}"  # Alert title
+    description: "{{description}}"  # Alert description
+    severity: 2  # Alert severity (1: low, 2: medium, 3: high)
+    tags:  # Alert tags
+      - "ids"
+      - "{{alert_type}}"
+  case_template: "IDS Alert Investigation"  # Case template name (optional)
+
+splunk_soar:
+  enabled: false  # Set to true to enable Splunk SOAR integration
+  api_url: "https://soar.example.com"  # Splunk SOAR API URL
+  api_token: "your-api-token-here"  # Splunk SOAR API token
+  verify_ssl: true  # Whether to verify SSL certificates
+  container_label: "IDS Alert"  # Label for containers created from alerts
+  default_severity: "medium"  # Default severity level (low, medium, high, critical)
+  default_sensitivity: "amber"  # Default sensitivity level (white, green, amber, red)
+  artifact_template:  # Template for creating artifacts from observables
+    label: "{{type}}"  # Artifact label
+    name: "{{value}}"  # Artifact name
+    tags: ["ids", "indicator", "{{type}}"]  # Artifact tags
+
+# Alert Template Configuration
+# ---------------------------
+alert_templates:
+  default:  # Default template for formatting alerts
+    fields:  # Fields to include in alert
+      - id
+      - timestamp
+      - title
+      - description
+      - severity
+      - source_ip
+      - destination_ip
+      - protocol
+      - source_port
+      - destination_ports
+      - alert_type
+      - rule_id
+      - rule_name
+    tags:  # Default tags to add to alerts
+      - "ids"
+      - "{{alert_type}}"
+    required_fields:  # Fields that must be present
+      - id
+      - timestamp
+      - title
+      - severity
+    severity_mapping:  # Map severity levels
+      low: "low"
+      medium: "medium"
+      high: "high"
+      critical: "critical"
+  network_traffic:  # Template for network traffic alerts
+    extends: "default"  # Extends the default template
+    fields:  # Additional fields
+      - direction
+      - bytes_in
+      - bytes_out
+      - packets_in
+      - packets_out
+      - connection_state
+    tags:
+      - "ids"
+      - "{{alert_type}}"
+      - "network"
+  malware:  # Template for malware alerts
+    extends: "default"  # Extends the default template
+    fields:  # Additional fields
+      - file_name
+      - file_path
+      - file_hash
+      - malware_family
+      - infection_vector
+    tags:
+      - "ids"
+      - "{{alert_type}}"
+      - "malware" 

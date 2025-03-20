@@ -1,0 +1,113 @@
+---
+# Controlled Test Environment Configuration
+name: "IDS Test Environment"
+description: "Configuration for a controlled test environment to evaluate IDS performance"
+version: "1.0"
+author: "IDS Team"
+
+# Network Configuration
+network:
+  type: "local"  # Options: local, virtual, cloud
+  subnet: "192.168.1.0/24"
+  gateway: "192.168.1.1"
+  dns: "192.168.1.1"
+
+# Target Systems
+systems:
+  - name: "target_web_server"
+    type: "web_server"
+    os: "linux"
+    ip: "192.168.1.10"
+    services:
+      - name: "http"
+        port: 80
+        application: "Apache2"
+        version: "2.4.41"
+      - name: "https"
+        port: 443
+        application: "Apache2"
+        version: "2.4.41"
+      - name: "ssh"
+        port: 22
+        application: "OpenSSH"
+        version: "8.2p1"
+        
+  - name: "target_db_server"
+    type: "database_server"
+    os: "linux"
+    ip: "192.168.1.20"
+    services:
+      - name: "mysql"
+        port: 3306
+        application: "MySQL"
+        version: "8.0.28"
+      - name: "ssh"
+        port: 22
+        application: "OpenSSH"
+        version: "8.2p1"
+
+# IDS Configuration
+ids:
+  name: "test_ids"
+  type: "network"  # Options: network, host, hybrid
+  ip: "192.168.1.100"
+  engine: "custom"  # The IDS implementation being tested
+  config_file: "../ids_config.yaml"
+  log_file: "../logs/ids_alerts.log"
+
+# Attack Systems
+attack_systems:
+  - name: "attacker"
+    type: "kali"
+    os: "linux"
+    ip: "192.168.1.200"
+    tools:
+      - "metasploit"
+      - "nmap"
+      - "hydra"
+      - "sqlmap"
+      - "scapy"
+
+# Monitoring Systems
+monitoring:
+  - name: "monitoring_server"
+    type: "monitoring"
+    ip: "192.168.1.150"
+    tools:
+      - "wireshark"
+      - "prometheus"
+      - "grafana"
+    log_path: "../logs/monitoring_logs"
+
+# Test Scenarios
+scenarios:
+  - name: "port_scanning"
+    file: "../scenarios/port_scan.yaml"
+    description: "Test IDS detection of port scanning activities"
+    
+  - name: "brute_force"
+    file: "../scenarios/brute_force.yaml"
+    description: "Test IDS detection of brute force login attempts"
+    
+  - name: "sql_injection"
+    file: "../scenarios/sql_injection.yaml"
+    description: "Test IDS detection of SQL injection attacks"
+    
+  - name: "ddos"
+    file: "../scenarios/ddos.yaml"
+    description: "Test IDS detection of DoS/DDoS attacks"
+    
+  - name: "multi_phase"
+    file: "../scenarios/multi_phase_attack.yaml"
+    description: "Test IDS detection of a multi-phase attack"
+
+# MITRE ATT&CK Coverage
+mitre_coverage:
+  - tactic: "Initial Access"
+    techniques: ["T1190"]
+  - tactic: "Credential Access"
+    techniques: ["T1110"]
+  - tactic: "Discovery"
+    techniques: ["T1046"]
+  - tactic: "Impact"
+    techniques: ["T1498"] 

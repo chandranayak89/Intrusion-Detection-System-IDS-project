@@ -1,0 +1,73 @@
+# SOAR Integration Configuration
+
+# TheHive Configuration
+thehive:
+  enabled: false
+  api_url: "http://thehive.example.com:9000"
+  api_key: "YOUR_API_KEY_HERE"
+  verify_ssl: true
+  proxies: null
+  org_name: "default"
+  default_tlp: 2  # TLP:AMBER
+  
+# Splunk SOAR Configuration
+splunk_soar:
+  enabled: false
+  api_url: "https://soar.example.com"
+  api_token: "YOUR_API_TOKEN_HERE"
+  verify_ssl: true
+  container_label: "IDS Alert"
+  default_severity: "medium"
+  default_sensitivity: "amber"
+  
+# Alert Template
+alert_template:
+  title: "IDS Alert: {alert_type}"
+  description: |
+    Detection Time: {detection_time}
+    Source IP: {source_ip}
+    Destination IP: {destination_ip}
+    Severity: {severity}
+    
+    {description}
+  type: "ids_alert"
+  source: "IDS"
+  severity: "{severity}"
+  tlp: 2
+  tags:
+    - "ids"
+    - "{alert_type}"
+  
+# Case Template
+case_template:
+  title: "IDS Case: {case_title}"
+  description: |
+    This case was automatically created from IDS alerts.
+    
+    {description}
+  severity: "{severity}"
+  tlp: 2
+  tags:
+    - "ids"
+    - "auto-created"
+  
+# Default Tasks for Cases
+default_tasks:
+  - title: "Initial Investigation"
+    description: "Perform initial triage and investigation of the security incident."
+    status: "Waiting"
+  - title: "Containment"
+    description: "Implement containment procedures to limit the impact of the incident."
+    status: "Waiting"
+  - title: "Evidence Collection"
+    description: "Collect and preserve evidence for further analysis."
+    status: "Waiting"
+  - title: "Root Cause Analysis"
+    description: "Determine the root cause of the incident."
+    status: "Waiting"
+  - title: "Remediation"
+    description: "Implement remediation measures to address the incident."
+    status: "Waiting"
+  - title: "Lessons Learned"
+    description: "Document lessons learned and update security controls as needed."
+    status: "Waiting" 
